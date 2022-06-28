@@ -1,0 +1,27 @@
+{
+  "name": "template-vite-vue-ts-tailwind-v3",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tiptap/extension-bubble-menu": "^2.0.0-beta.60",
+    "@tiptap/extension-floating-menu": "^2.0.0-beta.55",
+    "@tiptap/starter-kit": "^2.0.0-beta.189",
+    "@tiptap/vue-3": "^2.0.0-beta.95",
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@vitejs/plugin-vue": "^2.0.0",
+    "prettier": "^2.5.1",
+    "prettier-plugin-tailwindcss": "^0.1.5",
+    "sass": "^1.52.3",
+    "typescript": "^4.4.4",
+    "vitawind": "^2.2.4",
+    "vite": "^2.7.2",
+    "vue-tsc": "^0.29.8"
+  }
+}
