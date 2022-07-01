@@ -10,6 +10,10 @@ provider:
   runtime: nodejs14.x
   region: ca-central-1
 
+package:
+  patterns:
+    - src/cards/db/cards.json
+
 functions:
   main:
     handler: src/lambda.handler
@@ -17,3 +21,4 @@ functions:
       - http:
           method: any
           path: /{any+}
+          cors: true

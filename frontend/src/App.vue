@@ -6,7 +6,7 @@
       <div
         class="cardContent"
         v-if="cards && currentCardId"
-        v-html="cards.cards[currentCardId].content"
+        v-html="cards[currentCardId].content"
       ></div>
       <div
         v-if="cards && currentCardId"
@@ -14,7 +14,7 @@
       >
         <button
           class="w-full py-3 font-bold text-white bg-indigo-400 rounded-lg shadow-lg hover:bg-indigo-500"
-          @click="setCurrentCardId"
+          @click="setCurrentCardId()"
         >
           Next
         </button>
@@ -55,27 +55,34 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import Cards from "./cards";
 import CardEditor from "./components/CardEditor.vue";
+import axios from "axios";
 
-const cards = ref(null);
-const currentCardId = ref<String>(import.meta.env.VITE_DEFAULT_CARD_ID);
+const cards = ref<any>(null);
+const currentCardId = ref<string>(import.meta.env.VITE_DEFAULT_CARD_ID);
 const testContent = ref<String>("");
-const cardEditor = ref(null);
+const cardEditor = ref<InstanceType<typeof CardEditor>>(null);
 
 onMounted(async () => {
-  cards.value = await Cards.build();
+  const response = await axios({
+    method: "get",
+    url: `${import.meta.env.VITE_BACKEND_BASE_URL}/cards`,
+    headers: {},
+  });
+  cards.value = response.data;
 });
 
 const canDeleteCard = computed(() => {
   return currentCardId.value !== import.meta.env.VITE_DEFAULT_CARD_ID;
 });
 
-function setCurrentCardId() {
+function setCurrentCardId(cardId?: string) {
   const randomIndex = Math.floor(
-    Math.random() * Object.keys(cards.value.cards).length
+    Math.random() * Object.keys(cards.value).length
   );
-  currentCardId.value = Object.entries(cards.value.cards)[randomIndex][0];
+  currentCardId.value = cardId
+    ? cardId
+    : Object.entries(cards.value)[randomIndex][0];
 }
 
 function authorizeAction(): boolean {
@@ -89,21 +96,61 @@ function authorizeAction(): boolean {
   return false;
 }
 
-function addCard(content) {
+function randomId(): string {
+  return (
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15)
+  );
+}
+
+async function addCard(content: string) {
   if (authorizeAction()) {
-    cards.value.saveCard(content);
-    cardEditor.value.resetContent();
+    const cardId: string = randomId();
+    cards.value[cardId] = {
+      content,
+      hint: "",
+    };
+    try {
+      const response = await axios({
+        method: "post",
+        url: `${import.meta.env.VITE_BACKEND_BASE_URL}/cards/${cardId}`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          content,
+          hint: "",
+        },
+      });
+      setCurrentCardId(cardId);
+      cardEditor.value.resetContent();
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
-function deleteCard() {
+async function deleteCard() {
   if (authorizeAction()) {
-    try {
-      cards.value.deleteCard(currentCardId.value);
+    const cardId = currentCardId.value;
+    if (
+      Object.keys(cards.value).includes(cardId) &&
+      Object.keys(cards.value).length > 1
+    ) {
+      delete cards.value[cardId];
       setCurrentCardId();
-    } catch (error) {
-      alert(error);
-    }
+      try {
+        const response = await axios({
+          method: "delete",
+          url: `${import.meta.env.VITE_BACKEND_BASE_URL}/cards/${cardId}`,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else
+      throw new Error(
+        "Problem with deleting card: card not found or only one card left"
+      );
   }
 }
 </script>

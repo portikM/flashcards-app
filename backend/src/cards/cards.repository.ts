@@ -5,8 +5,13 @@ import { AddCardBodyDto } from './dto/add-card-body.dto';
 
 export class CardsRepository {
   private async getCardsFromFile(): Promise<Cards> {
-    const data = await fs.readFile('./src/cards/db/cards.json', 'utf8');
-    return JSON.parse(data);
+    try {
+      const data = await fs.readFile('./src/cards/db/cards.json', 'utf8');
+      return JSON.parse(data);
+    } catch (error) {
+      console.log(error);
+      throw new Error('Problem with getting cards');
+    }
   }
 
   private async saveCardsToFile(cards: Cards): Promise<void> {
