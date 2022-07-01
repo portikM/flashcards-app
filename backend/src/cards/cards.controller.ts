@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { AddCardBodyDto } from './dto/add-card-body.dto';
 import { Cards } from './cards.interface';
@@ -13,6 +22,7 @@ export class CardsController {
   }
 
   @Post('/:id')
+  @UsePipes(new ValidationPipe())
   async addCard(
     @Param('id') id: string,
     @Body() addCardBody: AddCardBodyDto,

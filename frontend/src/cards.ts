@@ -48,6 +48,9 @@ export default class Cards {
       const response = await axios({
         method: "post",
         url: `${import.meta.env.VITE_BACKEND_BASE_URL}/cards/${cardId}`,
+        headers: {
+          "Content-Type": "application/json",
+        },
         data: {
           content,
           hint: "",

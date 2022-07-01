@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
 
 export class AddCardBodyDto {
   @IsNotEmpty()
   @IsString()
   content: string;
 
-  @IsNotEmpty()
+  @IsDefined()
   @IsString()
   hint: string;
 }
