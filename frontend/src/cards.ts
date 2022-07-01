@@ -1,3 +1,5 @@
+import axios from "axios";
+
 interface Card {
   [id: string]: {
     content: string;
@@ -23,10 +25,10 @@ export default class Cards {
   }
 
   async getCards(): Promise<Card> {
-    // TODO: change this part to backend call
-    const response = await fetch("./db/cards.json");
-    const data = await response.json();
-    return data;
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_BASE_URL}/cards`
+    );
+    return response.data;
   }
 
   randomId(): string {
@@ -36,21 +38,40 @@ export default class Cards {
     );
   }
 
-  saveCard(content: string) {
-    this.cards[this.randomId()] = {
-      content: content,
+  async saveCard(content: string) {
+    const cardId = this.randomId();
+    this.cards[cardId] = {
+      content,
       hint: "",
     };
-    // TODO: call backend to add new card
+    try {
+      const response = await axios({
+        method: "post",
+        url: `${import.meta.env.VITE_BACKEND_BASE_URL}/cards/${cardId}`,
+        data: {
+          content,
+          hint: "",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  deleteCard(cardId: string) {
+  async deleteCard(cardId: string) {
     if (
       Object.keys(this.cards).includes(cardId) &&
       Object.keys(this.cards).length > 1
     ) {
       delete this.cards[cardId];
-      // TODO: call backend to delete card
+      try {
+        const response = await axios({
+          method: "delete",
+          url: `${import.meta.env.VITE_BACKEND_BASE_URL}/cards/${cardId}`,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     } else
       throw new Error(
         "Problem with deleting card: card not found or only one card left"

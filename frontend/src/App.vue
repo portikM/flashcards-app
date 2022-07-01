@@ -8,10 +8,20 @@
         v-if="cards && currentCardId"
         v-html="cards.cards[currentCardId].content"
       ></div>
-      <div class="relative w-full">
+      <div
+        v-if="cards && currentCardId"
+        class="relative inline-flex items-center w-full space-x-1"
+      >
+        <button
+          class="w-full py-3 font-bold text-white bg-indigo-400 rounded-lg shadow-lg hover:bg-indigo-500"
+          @click="setCurrentCardId"
+        >
+          Next
+        </button>
         <button
           @click="deleteCard"
-          class="absolute h-full p-2 text-red-500 rounded -left-12 hover:text-red-600"
+          v-if="canDeleteCard"
+          class="h-full p-2 text-red-500 rounded hover:text-red-600"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -31,33 +41,34 @@
             <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
           </svg>
         </button>
-        <button
-          class="w-full py-3 font-bold text-white bg-indigo-400 rounded-lg shadow-lg hover:bg-indigo-500"
-          @click="setCurrentCardId"
-        >
-          Next
-        </button>
+      </div>
+      <div v-else>
+        <p class="text-center">Loading...</p>
       </div>
     </div>
-    <div>
+    <div class="py-20">
+      <h1 class="mb-6 text-2xl font-bold text-center">Add a new card</h1>
       <CardEditor ref="cardEditor" @add="addCard" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import Cards from "./cards";
 import CardEditor from "./components/CardEditor.vue";
 
 const cards = ref(null);
-const currentCardId = ref<String>("");
+const currentCardId = ref<String>(import.meta.env.VITE_DEFAULT_CARD_ID);
 const testContent = ref<String>("");
 const cardEditor = ref(null);
 
 onMounted(async () => {
   cards.value = await Cards.build();
-  setCurrentCardId();
+});
+
+const canDeleteCard = computed(() => {
+  return currentCardId.value !== import.meta.env.VITE_DEFAULT_CARD_ID;
 });
 
 function setCurrentCardId() {
@@ -117,6 +128,10 @@ function deleteCard() {
     code {
       @apply text-orange-600;
     }
+  }
+
+  a {
+    @apply text-orange-600 underline hover:text-orange-700;
   }
 
   pre {

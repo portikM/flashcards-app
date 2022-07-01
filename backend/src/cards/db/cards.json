@@ -1,10 +1,1 @@
-{
-    "e2tfwqmomhjg37f5ivtc04": {
-        "content": "<p>Foo bar</p>",
-        "hint": "<p>Foo bar hint</p>"
-    },
-    "j0ivpa7wiptgd4484vwt05": {
-        "content": "<h2>Heading</h2><ul><li><p>bullet one</p></li><li><p>bullet two</p></li></ul><p>Regular <strong>bold</strong>, <em>italic</em> and <strong><em>bold vitalic</em></strong></p><pre><code>const foo = 'bar'; </code></pre> <p> Regular text with a <code> piece of code </code></p>",
-        "hint": "<p>Bar foo hint</p>"
-    }
-}
+{"4j4cpzlt8mlx0yv422lus":{"content":"<h2>Welcome to my Flashcards app!</h2><p>This is a small project that I created for myself to learn new stuffs and to sharpen my <code>TypeScript</code>, <code>Vue3</code>, <code>NestJS</code> and <code>GitHub Actions</code> skills.</p><p>Please don't add or delete any cards as this is <strong>my personal knowledge repository</strong>. If you do manage to add or delete any cards please <a href='mailto:portimaksym@gmail.com' target='_blank' rel='noopener noreferrer'>reach out to me</a> and tell me how you did it so I can improve security in this app.<br><br>Cheers!</p>","hint":""}}

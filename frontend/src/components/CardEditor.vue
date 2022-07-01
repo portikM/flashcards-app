@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center py-20 space-y-4">
+  <div class="flex flex-col items-center space-y-4">
     <bubble-menu
       class="space-x-2"
       :editor="editor"
@@ -59,9 +59,7 @@ export default {
   setup() {
     const defaultContent = `<p>Hello World!</p>`;
     const editor = useEditor({
-      // content: defaultContent,
-      content:
-        "<h2>Heading</h2><ul><li><p>bullet one</p></li><li><p>bullet two</p></li></ul><p>Regular <strong>bold</strong>, <em>italic</em> and <strong><em>bold vitalic</em></strong></p><pre><code>const foo = 'bar'; </code></pre><p>Regular text with a <code>piece of code</code></p>",
+      content: defaultContent,
       extensions: [StarterKit],
     });
 
