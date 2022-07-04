@@ -8,15 +8,18 @@ import {
   UsePipes,
   ValidationPipe,
   Header,
+  UseGuards,
 } from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { AddCardBodyDto } from './dto/add-card-body.dto';
 import { Cards } from './cards.interface';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('cards')
 export class CardsController {
   constructor(private cardsService: CardsService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('/')
   @Header('Access-Control-Allow-Origin', '*')
   @Header('Access-Control-Allow-Credentials', 'true')
@@ -24,6 +27,7 @@ export class CardsController {
     return await this.cardsService.getCards();
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('/:id')
   @UsePipes(new ValidationPipe())
   @Header('Access-Control-Allow-Origin', '*')
@@ -36,6 +40,7 @@ export class CardsController {
     return 'Card was added successfully!';
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete('/:id')
   @Header('Access-Control-Allow-Origin', '*')
   @Header('Access-Control-Allow-Credentials', 'true')

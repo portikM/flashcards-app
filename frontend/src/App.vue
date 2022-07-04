@@ -67,7 +67,9 @@ onMounted(async () => {
   const response = await axios({
     method: "get",
     url: `${import.meta.env.VITE_BACKEND_BASE_URL}/cards`,
-    headers: {},
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_BACKEND_TOKEN}`,
+    },
   });
   cards.value = response.data;
 });
@@ -116,6 +118,7 @@ async function addCard(content: string) {
         url: `${import.meta.env.VITE_BACKEND_BASE_URL}/cards/${cardId}`,
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_BACKEND_TOKEN}`,
         },
         data: {
           content,
@@ -143,6 +146,9 @@ async function deleteCard() {
         const response = await axios({
           method: "delete",
           url: `${import.meta.env.VITE_BACKEND_BASE_URL}/cards/${cardId}`,
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_BACKEND_TOKEN}`,
+          },
         });
       } catch (error) {
         console.log(error);
