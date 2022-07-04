@@ -7,6 +7,7 @@ import {
   Post,
   UsePipes,
   ValidationPipe,
+  Header,
 } from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { AddCardBodyDto } from './dto/add-card-body.dto';
@@ -17,12 +18,16 @@ export class CardsController {
   constructor(private cardsService: CardsService) {}
 
   @Get('/')
+  @Header('Access-Control-Allow-Origin', '*')
+  @Header('Access-Control-Allow-Credentials', 'true')
   async getCards(): Promise<Cards> {
     return await this.cardsService.getCards();
   }
 
   @Post('/:id')
   @UsePipes(new ValidationPipe())
+  @Header('Access-Control-Allow-Origin', '*')
+  @Header('Access-Control-Allow-Credentials', 'true')
   async addCard(
     @Param('id') id: string,
     @Body() addCardBody: AddCardBodyDto,
@@ -32,6 +37,8 @@ export class CardsController {
   }
 
   @Delete('/:id')
+  @Header('Access-Control-Allow-Origin', '*')
+  @Header('Access-Control-Allow-Credentials', 'true')
   async deleteCard(@Param('id') id: string): Promise<string> {
     await this.cardsService.deleteCard(id);
     return 'Card was deleted successfully!';
