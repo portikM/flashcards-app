@@ -2,12 +2,24 @@
 import { Cards } from './cards.interface';
 const fs = require('fs').promises;
 import { AddCardBodyDto } from './dto/add-card-body.dto';
+import { S3 } from 'aws-sdk';
 
 export class CardsRepository {
+  private getS3() {
+    return new S3();
+  }
+
   private async getCardsFromFile(): Promise<Cards> {
+    const s3 = this.getS3();
     try {
-      const data = await fs.readFile('./src/cards/db/cards.json', 'utf8');
-      return JSON.parse(data);
+      const data = await s3
+        .getObject({
+          Bucket: process.env.BUCKET_NAME,
+          Key: 'cards.json',
+        })
+        .promise();
+
+      return JSON.parse(data.Body.toString());
     } catch (error) {
       console.log(error);
       throw new Error('Problem with getting cards');
@@ -16,7 +28,15 @@ export class CardsRepository {
 
   private async saveCardsToFile(cards: Cards): Promise<void> {
     try {
-      await fs.writeFile('./src/cards/db/cards.json', JSON.stringify(cards));
+      const s3 = this.getS3();
+      await s3
+        .putObject({
+          Bucket: process.env.BUCKET_NAME,
+          Key: 'cards.json',
+          Body: JSON.stringify(cards),
+          ACL: 'public-read',
+        })
+        .promise();
     } catch (error) {
       console.log(error);
       throw new Error('Problem with saving card');

@@ -9,10 +9,15 @@ provider:
   name: aws
   runtime: nodejs14.x
   region: ca-central-1
-
-package:
-  patterns:
-    - src/cards/db/cards.json
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:PutObjectAcl
+            - s3:GetObject
+          Resource: 'arn:aws:s3:::${self:custom.bucket}/*'
 
 functions:
   main:
@@ -22,3 +27,13 @@ functions:
           method: any
           path: /{any+}
           cors: true
+
+resources:
+  Resources:
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket}
+
+custom:
+  bucket: ${file(env.yml):BUCKET}-${opt:stage, 'dev'}
